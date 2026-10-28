@@ -12,7 +12,7 @@ class Coordinate(db.Model):
 
 class Detail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    route_id = db.Column(db.Integer, db.ForeignKey('route.id'), nullable=False)
+    route_id = db.Column(db.Integer, db.ForeignKey('route.id'), nullable=False, unique=True)
     description_start = db.Column(db.Text(), nullable=False)
     description_basic = db.Column(db.Text(), nullable=False)
     routestart = db.Column(db.Text(), nullable=False)

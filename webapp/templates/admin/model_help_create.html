@@ -1,0 +1,8 @@
+{% extends 'admin/model/create.html' %}
+
+{% block body %}
+{% if help_text %}
+<div class="alert alert-secondary mx-3 mt-3">{{ help_text }}</div>
+{% endif %}
+{{ super() }}
+{% endblock %}

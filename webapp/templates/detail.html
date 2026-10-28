@@ -49,6 +49,13 @@
         </div>
         {% endif %}
 
+        {% if video_html %}
+        <div class="route-video">
+            <h2>Видео</h2>
+            {{ video_html }}
+        </div>
+        {% endif %}
+
         <div class="map-panel">
             <h2>Карта</h2>
             {{ folium_map|safe }}

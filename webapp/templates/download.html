@@ -1,8 +1,21 @@
-<!doctype html>
-    <title>Загрузить новый файл</title>
-    <h1>Загрузить новый файл</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
+{% extends "base.html" %}
+
+{% block title %}Линия из файла — {{ route.title }}{% endblock %}
+
+{% block content %}
+<section class="container py-4" style="max-width: 720px;">
+    <h1>Линия из файла</h1>
+    <p>Маршрут: <strong>{{ route.title }}</strong>. Загрузите GeoJSON, где первая фигура — линия (LineString). В файле сначала идёт долгота, потом широта. Сайт ставит их в правильном порядке.</p>
+    <p>Старые точки только этого маршрута будут заменены. Описание, обложка и метки останутся.</p>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info">{{ messages[0] }}</div>
+        {% endif %}
+    {% endwith %}
+    <form method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2">
+        <input class="form-control" type="file" name="file" accept=".json,.geojson,application/geo+json">
+        <button class="btn btn-primary" type="submit">Загрузить</button>
     </form>
-    </html>
+    <p class="mt-3"><a href="{{ url_for('admin.index') }}">Вернуться в админку</a></p>
+</section>
+{% endblock %}

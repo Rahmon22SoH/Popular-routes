@@ -1,6 +1,11 @@
+from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from webapp.extensions import db
+
+# Эти же имя и пароль написаны в README. Пароль меняется только если пользователя ещё нет.
+DEMO_ADMIN_USERNAME = "admin"
+DEMO_ADMIN_PASSWORD = "kavkaz2026"
 
 
 class User(db.Model, UserMixin):
@@ -22,3 +27,23 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User name={} id={}>' .format(self.username, self.id)
+
+
+def ensure_demo_admin():
+    """Создаёт администратора admin, если такого имени в базе ещё нет."""
+    if not inspect(db.engine).has_table("user"):
+        return None
+    existing = db.session.scalar(
+        db.select(User).filter_by(username=DEMO_ADMIN_USERNAME)
+    )
+    if existing is not None:
+        return existing
+    admin = User(
+        username=DEMO_ADMIN_USERNAME,
+        email="admin@example.com",
+        role="admin",
+    )
+    admin.set_password(DEMO_ADMIN_PASSWORD)
+    db.session.add(admin)
+    db.session.commit()
+    return admin

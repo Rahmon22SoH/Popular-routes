@@ -204,6 +204,16 @@ a { color: inherit; }
 .map-panel { padding: 1rem; }
 .map-panel iframe, .map-panel .folium-map { width: 100% !important; border: 0; border-radius: 0.8rem; }
 
+.route-video { max-width: 760px; margin: 0.5rem 0 2rem; }
+.route-video h2 { margin-top: 0.2rem; }
+.route-video iframe, .route-video video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 0.8rem;
+    background: #1c241c;
+}
+
 .auth-screen {
     min-height: 70vh;
     display: grid;

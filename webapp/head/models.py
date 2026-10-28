@@ -22,3 +22,6 @@ class Route(db.Model):
         if not self.image:
             return "media/panar4.jpeg"
         return f"media/{self.image}"
+
+    def __str__(self):
+        return self.title or f"Маршрут {self.id}"
