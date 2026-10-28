@@ -1,14 +1,18 @@
-from flask import Blueprint, request, flash, redirect, render_template
-from webapp.description.models import Coordinate
-from webapp.head.models import Route
-from webapp.extensions import db
 import json
+
+from flask import Blueprint, flash, redirect, render_template, request
+
+from webapp.description.models import Coordinate
+from webapp.extensions import db
+from webapp.head.models import Route
+from webapp.user.decorators import admin_required
 
 
 blueprint = Blueprint('load', __name__)
 
 
 @blueprint.route('/load/<int:pk>', methods=['GET', 'POST'])
+@admin_required
 def upload_file(pk):
     if request.method == 'POST':
         if 'file' not in request.files:

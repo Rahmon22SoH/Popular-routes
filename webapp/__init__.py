@@ -4,12 +4,15 @@ from flask_login import LoginManager
 from webapp.extensions import db, migrate
 from webapp.user.model import User
 from webapp.user.views import blueprint as user_blueprint
-from webapp.admin import (RouteImageView, CoordinateModelView, DetailModelView,
-                          VisualModelView, CoordinateformapModelView)
+from webapp.admin import (
+    CoordinateModelView, CoordinateformapModelView, DetailModelView,
+    RouteImageView, SecureAdminIndex, VisualModelView,
+)
 from webapp.head.view import blueprint as head_blueprint
 from webapp.load.view import blueprint as load_blueprint
 from webapp.description.view import blueprint as description_blueprint
 from webapp.head.models import Route
+from webapp.weather import weather_by_city
 from webapp.description.models import (Coordinate, Detail, Coordinateformap,
                                        Visual)
 
@@ -21,7 +24,12 @@ def create_app():
     app.config['SECRET_KEY'] = '123456'
     app.register_blueprint(user_blueprint)
     register_extensions(app)
-    admin = Admin(app, name='map_rout', template_mode='bootstrap4')
+    admin = Admin(
+        app,
+        name="Маршруты",
+        template_mode="bootstrap4",
+        index_view=SecureAdminIndex(name="Главная"),
+    )
     register_admin_views(admin)
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -34,6 +42,11 @@ def create_app():
     app.register_blueprint(head_blueprint)
     app.register_blueprint(load_blueprint)
     app.register_blueprint(description_blueprint)
+
+    @app.context_processor
+    def inject_weather():
+        city = app.config.get("WEATHER_DEFAULT_CITY", "Sochi, Russia")
+        return {"weather": weather_by_city(city)}
 
     return app
 

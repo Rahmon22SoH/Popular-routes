@@ -35,7 +35,7 @@ def process_login():
 @blueprint.route('/logout')
 def logout():
     logout_user()
-    flash('Выуспешно разлогинелись')
+    flash("Вы вышли из аккаунта")
     return redirect(url_for('head.index'))
 
 

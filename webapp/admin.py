@@ -1,10 +1,11 @@
 import os
+from flask import redirect, url_for
+from flask_admin import AdminIndexView, form
 from flask_admin.contrib.sqla import ModelView
-from flask import url_for
+from flask_login import current_user
 from markupsafe import Markup
 from wtforms import TextAreaField
 from wtforms.widgets import TextArea
-from flask_admin import form
 
 
 file_path = os.path.join(os.path.dirname(__file__), 'static', 'media')
@@ -28,7 +29,27 @@ class CKTextAreaField(TextAreaField):
     widget = CKTextAreaWidget()
 
 
-class RouteImageView(ModelView):
+class SecureAdminIndex(AdminIndexView):
+    """Главная админки открыта только пользователю с ролью admin."""
+
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.is_admin
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("user.login"))
+
+
+class SecureModelView(ModelView):
+    """Разделы админки недоступны обычному посетителю."""
+
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.is_admin
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("user.login"))
+
+
+class RouteImageView(SecureModelView):
     extra_js = ['/static/js/ckeditor.js', '/static/js/admin.js']
 
     def _list_thumbnail(view, context, model, name):
@@ -56,7 +77,7 @@ class RouteImageView(ModelView):
     }
 
 
-class CoordinateModelView(ModelView):
+class CoordinateModelView(SecureModelView):
     def _list_thumbnail(view, model):
         if not model.path:
             return ''
@@ -69,7 +90,7 @@ class CoordinateModelView(ModelView):
     }
 
 
-class DetailModelView(ModelView):
+class DetailModelView(SecureModelView):
     extra_js = ['//cdn.ckeditor.com/4.6.0/standard/ckeditor.js']
 
     def _list_thumbnail(view, model):
@@ -89,7 +110,7 @@ class DetailModelView(ModelView):
     }
 
 
-class VisualModelView(ModelView):
+class VisualModelView(SecureModelView):
     extra_js = ['//cdn.ckeditor.com/4.6.0/standard/ckeditor.js']
 
     def _list_thumbnail(view, context, model, name):
@@ -117,7 +138,7 @@ class VisualModelView(ModelView):
     }
 
 
-class CoordinateformapModelView(ModelView):
+class CoordinateformapModelView(SecureModelView):
     def _list_thumbnail(view, model):
         if not model.path:
             return ''

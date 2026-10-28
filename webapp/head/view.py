@@ -1,16 +1,41 @@
-from flask import Blueprint, render_template
-from flask_admin import form
+from flask import Blueprint, render_template, request
+from sqlalchemy import or_
 
 from webapp.extensions import db
 from webapp.head.models import Route
-from webapp.weather import weather_by_city
 
-blueprint = Blueprint('head', __name__)
+blueprint = Blueprint("head", __name__)
+
+AREAS = ("Сочи", "Красная Поляна")
+DIFFICULTIES = ("лёгкий", "средний", "сложный")
 
 
-@blueprint.route('/')
+@blueprint.route("/")
 def index():
-    map_rout = db.session.scalars(db.select(Route)).all()
-    weather = weather_by_city("Sochi, Russia")
-    return render_template("index.html", map_rout=map_rout,
-                           thumbnail=form.thumbgen_filename, weather=weather)
+    query = request.args.get("q", "").strip()
+    area = request.args.get("area", "").strip()
+    difficulty = request.args.get("difficulty", "").strip()
+
+    stmt = db.select(Route).order_by(Route.id)
+    if query:
+        like = f"%{query}%"
+        stmt = stmt.where(or_(
+            Route.title.ilike(like),
+            Route.description.ilike(like),
+            Route.area.ilike(like),
+        ))
+    if area in AREAS:
+        stmt = stmt.where(Route.area == area)
+    if difficulty in DIFFICULTIES:
+        stmt = stmt.where(Route.difficulty == difficulty)
+
+    map_rout = db.session.scalars(stmt).all()
+    return render_template(
+        "index.html",
+        map_rout=map_rout,
+        query=query,
+        area=area,
+        difficulty=difficulty,
+        areas=AREAS,
+        difficulties=DIFFICULTIES,
+    )

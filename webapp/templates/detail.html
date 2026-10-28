@@ -1,68 +1,60 @@
-{% extends 'base.html' %}
-
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ maps_routes.title }} — Кавказский заповедник{% endblock %}
 
 {% block content %}
-    <div class="container text-center">
-    <div class="h3 mt-5 mb-1">
-    <h2 class="lead mt-0 mb-5"></h2>
-    {% include 'carousel.html' %}
-    <section class="signup2">
-        <div class="class-row">
-            <div class="col-lg-9 offset-lg-1">
-                <h6> {{ detail_routes.description_start|safe }}</h6>
-            </div>
-        </div>
+<section class="detail-hero">
+    <img src="{{ url_for('static', filename=maps_routes.image_path) }}" alt="{{ maps_routes.title }}">
+    <div class="hero-shade"></div>
+    <div class="container hero-copy">
+        <p class="eyebrow">{{ maps_routes.area or "Заповедник" }}</p>
+        <h1>{{ maps_routes.title }}</h1>
     </div>
-    </section>
-    <div class="col-lg-9 offset-lg-1">
-        {{ maps_routes.video|safe }}
-    </div>
-    <section class="signup2">
-        <div class="class-row">
-            <div class="col-lg-9 offset-lg-1">
-                <h6> {{ detail_routes.description_basic|safe }}</h6>
-                {% if folium_map %}
-                    {{ folium_map|safe }}
-                {% else %}
-                    карта временно недоступна
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    </section>
+</section>
 
-    <div class="box">
-        <img src="static\media\icon.svg">
-    </div>
-    <section class="mapping">
-        <div class="class-row">
-            <div class="col-lg-4 offset-lg-2">
-                <h6> {{ detail_routes.workingmode|safe }} </h6>
-            </div>
+<section class="detail-body">
+    <div class="container">
+        <div class="facts">
+            {% if maps_routes.difficulty %}<span>{{ maps_routes.difficulty }}</span>{% endif %}
+            {% if maps_routes.distance_km %}<span>{{ maps_routes.distance_km|int }} км</span>{% endif %}
+            {% if maps_routes.duration %}<span>{{ maps_routes.duration }}</span>{% endif %}
         </div>
-    </div>
-</div>
-<div class="box">
-    <img src="static\media\route_icon.svg">
-</div>
-<section class="mapping">
-    <div class="class-row">
-        <div class="col-lg-4 offset-lg-2">
-            <h6> {{ detail_routes.routestart|safe }} </h6>
-        </div>
-    </div>
-</div>
-</div>
 
+        <div class="prose">
+            <p class="lead">{{ maps_routes.description }}</p>
+            {% if detail_routes %}
+            <h2>По тропе</h2>
+            <p>{{ detail_routes.description_start }}</p>
+            <p>{{ detail_routes.description_basic }}</p>
+            <div class="fact-grid">
+                <article>
+                    <h3>Старт</h3>
+                    <p>{{ detail_routes.routestart }}</p>
+                </article>
+                <article>
+                    <h3>Когда идти</h3>
+                    <p>{{ detail_routes.workingmode }}</p>
+                </article>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if visuals %}
+        <div class="photo-grid">
+            {% for photo in visuals %}
+            <figure>
+                <img src="{{ url_for('static', filename='media/' + photo.image) }}" alt="{{ photo.title }}">
+                <figcaption>{{ photo.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="map-panel">
+            <h2>Карта</h2>
+            {{ folium_map|safe }}
+        </div>
+
+        <p class="back-link"><a href="{{ url_for('head.index') }}#routes">Все маршруты</a></p>
+    </div>
+</section>
 {% endblock %}
-{% block script %}
-<script async charset="utf-8" src="//cdn.embedly.com/widgets/platform.js"></script>
-<script src="{{ url_for('static', filename='js/detail.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-{% endblock %}
-

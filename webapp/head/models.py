@@ -1,5 +1,4 @@
 from webapp.extensions import db
-from flask_admin import form
 
 
 class Route(db.Model):
@@ -8,6 +7,10 @@ class Route(db.Model):
     description = db.Column(db.Text(), nullable=True)
     video = db.Column(db.Text(), nullable=True)
     image = db.Column(db.Unicode(128), nullable=True)
+    area = db.Column(db.String(40), nullable=True)
+    difficulty = db.Column(db.String(20), nullable=True)
+    distance_km = db.Column(db.Float, nullable=True)
+    duration = db.Column(db.String(40), nullable=True)
     coordinates = db.relationship('Coordinate', backref='route', lazy=True)
     detail = db.relationship('Detail', backref='route', lazy=True)
     visuals = db.relationship('Visual', backref='route', lazy=True)
@@ -16,4 +19,6 @@ class Route(db.Model):
 
     @property
     def image_path(self):
-        return f'media/{form.thumbgen_filename(self.image)}'
+        if not self.image:
+            return "media/panar4.jpeg"
+        return f"media/{self.image}"

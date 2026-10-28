@@ -18,9 +18,8 @@ def get_map(pk):
     try:
         folium_map = folium.Map(location=loc[0],
                                 zoom_start=13,
-                                width=1000,
-                                height=600,
-                                top=80
+                                width="100%",
+                                height=480
                                 )
 
         polyline_options = {
@@ -38,11 +37,10 @@ def get_map(pk):
             draggable=False).add_to(folium_map)
 
     except (IndexError):
-        folium_map = folium.Map(location=[64.6863136, 97.7453061],
-                                zoom_start=4,
-                                width=1000,
-                                height=600,
-                                top=80
+        folium_map = folium.Map(location=[43.6, 40.2],
+                                zoom_start=8,
+                                width="100%",
+                                height=480
                                 )
 
     base_dir = Path(__file__).resolve().parent
@@ -60,8 +58,8 @@ def get_map(pk):
 
         folium.Marker(
             location=(
-                coordinate_map.longitude_for_image,
-                coordinate_map.latitude_for_image
+                coordinate_map.latitude_for_image,
+                coordinate_map.longitude_for_image
                 ),
             popup=popup,
             icon=folium.Icon(icon='info-sign', color="blue"),

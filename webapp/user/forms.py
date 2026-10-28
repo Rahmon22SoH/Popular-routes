@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
         render_kw={"class": "form-control"}
         )
     password2 = PasswordField(
-        'Пароль',
+        'Повторите пароль',
         validators=[DataRequired(), EqualTo('password')],
         render_kw={"class": "form-control"}
         )
