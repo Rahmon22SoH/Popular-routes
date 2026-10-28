@@ -1,8 +1,10 @@
 .idea/*
 .vscode/*
 webapp/config.py
-webapp/static/*
+db.sqlite3
+*.sqlite3
 env/
-.vscode/*
+venv/
+**/__pycache__/
 **/.DS_Store
-**/__pycache__
+Thumbs.db

@@ -1,4 +1,5 @@
 from webapp.description.models import Coordinate, Coordinateformap
+from webapp.extensions import db
 import folium
 from folium import IFrame
 import base64
@@ -7,8 +8,12 @@ import os
 
 
 def get_map(pk):
-    coordinates = Coordinate.query.filter_by(route_id=pk).all()
-    coordinates_for_rout = Coordinateformap.query.filter_by(route_id=pk).all()
+    coordinates = db.session.scalars(
+        db.select(Coordinate).filter_by(route_id=pk).order_by(Coordinate.order)
+    ).all()
+    coordinates_for_rout = db.session.scalars(
+        db.select(Coordinateformap).filter_by(route_id=pk)
+    ).all()
     loc = [(c.latitude, c.longitude) for c in coordinates]
     try:
         folium_map = folium.Map(location=loc[0],
@@ -45,6 +50,8 @@ def get_map(pk):
         image_file = coordinate_map.image_for_map
         image_path = os.path.join(base_dir, '..', 'static', 'media',
                                   image_file)
+        if not image_file or not os.path.isfile(image_path):
+            continue
         title = f'{coordinate_map.title}'
         picture = base64.b64encode(open(image_path, 'rb').read()).decode()
         html = f'{title}<img src="data:image/JPG;base64,{picture}">'

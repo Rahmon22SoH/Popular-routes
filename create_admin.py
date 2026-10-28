@@ -1,14 +1,17 @@
 import sys
 from getpass import getpass
 from webapp import create_app
-from webapp import db, User
+from webapp.extensions import db
+from webapp.user.model import User
 
 app = create_app()
 
 with app.app_context():
     username = input('Введите имя пользователя: ')
 
-    if User.query.filter(User.username == username).count():
+    if db.session.scalar(
+        db.select(db.func.count()).select_from(User).filter_by(username=username)
+    ):
         print('Такой пользователь уже есть')
         sys.exit(0)
 

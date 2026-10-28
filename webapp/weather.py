@@ -3,9 +3,12 @@ from flask import current_app
 
 
 def weather_by_city(city_name):
-    weather_url = current_app.config["WEATHER_URL"]
+    weather_url = current_app.config.get("WEATHER_URL")
+    api_key = current_app.config.get("WEATHER_API_KEY")
+    if not weather_url or not api_key:
+        return False
     params = {
-        "key": current_app.config["WEATHER_API_KEY"],
+        "key": api_key,
         "q": city_name,
         "format": "json",
         "num_of_days": 1,

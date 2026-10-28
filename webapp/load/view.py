@@ -24,7 +24,7 @@ def upload_file(pk):
             route = next(iter(coordinate_for_file.get("features", [])), None)
             route_coordinates = route.get('geometry', {}).get('coordinates',
                                                               [])
-            route = Route.query.filter_by(id=pk).first()
+            route = db.session.get(Route, pk)
 
             for position, coordinates in enumerate(route_coordinates):
                 coordinates = Coordinate(
