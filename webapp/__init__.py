@@ -21,7 +21,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     app.config["FLASK_ADMIN_SWATCH"] = 'cerulean'
-    app.config['SECRET_KEY'] = '123456'
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError("В webapp/config.py не задан SECRET_KEY")
     app.register_blueprint(user_blueprint)
     register_extensions(app)
     admin = Admin(

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 
 from webapp.extensions import db
 from webapp.user.model import User
@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
         )
     password = PasswordField(
         'Пароль',
-        validators=[DataRequired()],
+        validators=[DataRequired(), Length(min=8, message="Пароль должен быть не короче 8 символов")],
         render_kw={"class": "form-control"}
         )
     password2 = PasswordField(

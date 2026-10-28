@@ -18,7 +18,11 @@ with app.app_context():
     password = getpass('Введите пароль: ')
     password2 = getpass('Повторите пароль: ')
 
-    if not password == password2:
+    if password != password2:
+        print("Пароли не совпадают")
+        sys.exit(0)
+    if len(password) < 8:
+        print("Пароль должен быть не короче 8 символов")
         sys.exit(0)
         
     new_user = User(username=username, role='admin')
